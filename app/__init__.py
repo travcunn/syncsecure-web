@@ -1,6 +1,8 @@
 from flask import Flask
+from flask.ext.cache import Cache
 from flask.ext.login import LoginManager
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CsrfProtect
 from redis import ConnectionPool, Redis
 
 from app.sessions import RedisSessionInterface
@@ -8,6 +10,12 @@ from app.sessions import RedisSessionInterface
 
 app = Flask(__name__)
 app.config.from_object('app.config')
+
+cache = Cache(app, config={'CACHE_TYPE': 'redis',
+                           'CACHE_REDIS_HOST': '127.0.0.1',
+                           'CACHE_KEY_PREFIX': 'appcache.'})
+
+CsrfProtect(app)
 
 login_manager = LoginManager(app)
 login_manager.session_protection = "strong"

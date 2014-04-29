@@ -2,10 +2,9 @@ from app import db
 from app.models import User
 
 
-#TODO: process this correctly with flask-forms so we can get some csrf
 class LoginValidator(object):
-    def __init__(self, username, password):
-        self.__username = username
+    def __init__(self, email, password):
+        self.__email = email
         self.__password = password
 
     @property
@@ -14,11 +13,11 @@ class LoginValidator(object):
         if user is None:
             return False
 
-        if user.password != self.__password:
+        if not user.check_password(self.__password):
             return False
 
         return True
 
     @property
     def lookup_user(self):
-        return db.session.query(User).filter_by(email=self.__username).first()
+        return db.session.query(User).filter_by(email=self.__email).first()

@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}My Files - SyncSecure{% endblock %}
+{% block title %}Settings - Account - SyncSecure{% endblock %}
 
 {% block errormessages %}
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -44,6 +44,13 @@
 
 {% block jsbottom %}
 <script src="/static/js/table-filter.js"></script>
+<script>
+$(window).ready(function(e){
+      $.each($('div.progress-bar'),function(){
+        $(this).css('width', $(this).attr('aria-valuetransitiongoal')+'%');
+      });
+});
+</script>
 {% endblock %}
 
 
@@ -56,7 +63,7 @@
     <div class="col-xs-12">
   <nav class="nav-sidebar">
     <ul class="nav">
-      <li class="active"><a href="/home"><span class="glyphicon glyphicon-cloud"></span> My Files</a></li>
+      <li><a href="/home"><span class="glyphicon glyphicon-cloud"></span> My Files</a></li>
       <!--
       <li><a href="/documents" class="menu-item-fade"><span class="glyphicon glyphicon-file"></span> Documents</a></li>
       <li><a href="/photos" class="menu-item-fade"><span class="glyphicon glyphicon-picture"></span> Photos</a></li>
@@ -74,82 +81,80 @@
 
 </div>
 
-<div class="col-lg-10 col-sm-9 col-xs-12 right-content">
-  <div class="row">
-    <div class="col-lg-8 col-sm-12">
-      <ol class="breadcrumb">
-        <li><a href="#">SyncSecure</a></li>
-        <li><a href="#">Library</a></li>
-        <li><a href="#">Photos</a></li>
-        <li class="active">Data</li>
-      </ol>
-    </div>
-    <div class="col-lg-4 col-sm-12">
-      <div class="btn-group btn-group-lg buttons-right">
-        <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-cloud-upload"></span> Upload</a>
-        <a href="#" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> New Folder</a>
-      </div>
-    </div>
-  </div>
+<div class="col-lg-10 col-sm-9 col-xs-12 right-content-settings">
+    <h1>Settings</h1>
 
-  <div class="row">
-    <div class="col-md-12">
-      <div class="panel panel-info">
-        <div class="panel-heading">
-          <h3 class="panel-title panel-title-white">File Listing</h3>
-          <div class="pull-right">
-            <span class="clickable filter" data-toggle="tooltip" title="Toggle folder filter" data-container="body">
-              <i class="glyphicon glyphicon-filter"></i>
-            </span>
-          </div>
+    <div class="top-spacing">
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="/settings/account">Account</a></li>
+        <li><a href="/settings/storage">Storage Space</a></li>
+    </ul>
+</div>
+    <div class="row top-spacing">
+        <div class="col-lg-6">
+            <h3>Hello, {{ g.user.get_first_name() }}</h3>
+            <small>{{ g.user.get_email() }}</small>
+            <p class="top-spacing">
+            <button type="button" class="btn btn-xs btn-default">Change email</button>
+            <button type="button" class="btn btn-xs btn-default">Change password</button>
+            </p>
         </div>
-        
-        <div class="panel-body">
-          <input type="text" class="form-control" id="files-table-filter" data-action="filter" data-filters="#files-table" placeholder="Filter this folder" />
+         <div class="col-lg-6 top-spacing text-left">
+                     </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>General Settings</h2>
+
+
+<form class="form-horizontal" role="form" method="POST" action="{{ url_for('save_general_settings') }}">
+{{ general_settings_form.hidden_tag() }}
+<div class="checkbox">
+    {{ general_settings_form.new_device_email }}
+    {{ general_settings_form.new_device_email.label }}  
+</div>
+<div class="checkbox">
+    {{ general_settings_form.almost_out_of_space_email }}
+    {{ general_settings_form.almost_out_of_space_email.label }}  
+</div>
+<div class="checkbox">
+    {{ general_settings_form.syncsecure_news_email }}
+    {{ general_settings_form.syncsecure_news_email.label }}
+</div>
+<div class="top-spacing">
+    {{ general_settings_form.timezone.label }}
+    {{ general_settings_form.timezone }}
+</div>
+<div class="top-spacing">
+    <button type="submit" class="btn btn-info">Save</button>
+</div>
+</form>
+            
+                </div>
+            </div>
+
         </div>
-        <table class="table table-hover" id="files-table">
-          <thead>
-            <tr>
-              <th></th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Modified</th>
-              <th>Shared with</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="icon"><img src="https://cdn1.iconfinder.com/data/icons/stuttgart/32/folder.png"></td>
-              <td><a href="#">Apps</a></td>
-              <td>Folder</td>
-              <td>3 minutes ago</td>
-              <td>Dave Owens</td>
-            </tr>
-            <tr>
-              <td class="icon"><img src="https://cdn1.iconfinder.com/data/icons/stuttgart/32/folder.png"></td>
-              <td><a href="#">Photos</a></td>
-              <td>Folder</td>
-              <td>4/24/2014</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td class="icon"><img src="https://cdn2.iconfinder.com/data/icons/picol-vector/32/document_text-32.png"></td>
-              <td><a href="#">BookReport.docx</a></td>
-              <td>Document</td>
-              <td>1 hour ago</td>
-              <td></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-		</div>
-  </div>
+        <div class="col-sm-6">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h2>Billing Information</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <button type="button" class="btn btn-sm btn-default">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
 </div>
+</div>
 
-</div>
-</div>
 
 {% endblock %}
