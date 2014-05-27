@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+{% block title %}Verify your email - SyncSecure{% endblock %}
+
+{% block css %}
+<link href="/static/css/storage-plans.css" rel="stylesheet">
+{% endblock %}
+
+{% block errormessages %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="top-error">
+          {% for category, message in messages %}
+            <div class="alert alert-dismissable alert{% if category != 'message'%}-{{ category }}{% endif %}{% if category == 'message' %}-warning{% endif %}">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <strong class="top-error-text">{{ message }}</strong>
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+{% endblock %}
+
+{% block topnavbar %}
+
+<ul class="nav navbar-nav navbar-right">
+  <li><a href="/download">Download</a></li>
+</ul>
+{% endblock %}
+
+{% block jsbottom %}
+<script>
+$('#loginModal').on('shown.bs.modal', function () {
+    $('#loginEmail').focus();
+})
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="row inner-content">
+    <div class="col-lg-12">
+        <div class="page-header text-center">
+            <h1 id="tables">Verify your email</h1>
+            <h4>We need to make sure your email is legit in case we ever need
+            to send you anything.</h4>
+        </div>
+    </div>
+</div>
+
+<div class="row top-spacing">
+    <div class="col-lg-12 text-center">
+        <strong>Didn't receive an email?</strong>
+    </div>
+</div>
+
+<div class="row top-spacing">
+    <div class="col-lg-12 text-center">
+        <a class="btn btn-sm btn-info" href="#verifySendModal" data-toggle="modal" 
+            data-target="#verifySendModal">Resend Verification</a>
+    </div>
+</div>
+
+
+<div id="verifySendModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h1 class="text-center">Are you a human?</h1>
+      </div>
+      <div class="modal-body">
+      <form action="{{ url_for('logged_out.resend_verification') }}" method="post">
+        {{ resend_form.hidden_tag() }}
+        {{ resend_form.recaptcha }}
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-12 text-center">
+            <button class="btn btn-sm btn-info" type="submit">Resend Verification</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+
+{% endblock %}

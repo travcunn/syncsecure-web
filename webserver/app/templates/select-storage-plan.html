@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+{% block title %}Select a Storage Plan - SyncSecure{% endblock %}
+
+{% block css %}
+<link href="/static/css/storage-plans.css" rel="stylesheet">
+{% endblock %}
+
+{% block errormessages %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="top-error">
+          {% for category, message in messages %}
+            <div class="alert alert-dismissable alert{% if category != 'message'%}-{{ category }}{% endif %}{% if category == 'message' %}-warning{% endif %}">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <strong class="top-error-text">{{ message }}</strong>
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+{% endblock %}
+
+{% block topnavbar %}
+
+<ul class="nav navbar-nav navbar-right">
+  <li><a href="/download">Download</a></li>
+</ul>
+{% endblock %}
+
+{% block jsbottom %}
+<script>
+$('#loginModal').on('shown.bs.modal', function () {
+    $('#loginEmail').focus();
+})
+</script>
+{% endblock %}
+
+{% block body %}
+<div class="row inner-content">
+    <div class="col-lg-12">
+        <div class="page-header text-center">
+            <h1 id="tables">Select a storage plan</h1>
+            <h4>Did you know that shared folders on Dropbox count against
+            your storage quota? We don't do that.</h4>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="text-center plan-heading">
+                    Basic Storage (10 GB)</h4>
+                </div>
+                <div class="panel-body text-center">
+                    <p class="lead">
+                        <strong>$0.99 / month</strong></p>
+                </div>
+                <ul class="list-group list-group-flush text-center">
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Encrypted Sync</li>
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Secure Sharing and Links</li>
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Unlimited Bandwidth</li>
+                </ul>
+                <div class="panel-footer">
+                    <form action="{{ url_for('logged_out.save_storage_plan', plan_name="basic") }}" method="post">
+                    {{ basic_form.hidden_tag() }}
+                    <button class="btn btn-lg btn-block btn-primary">Select</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <h4 class="text-center plan-heading">
+                    Pro Storage (100 GB)</h4>
+                </div>
+                <div class="panel-body text-center">
+                    <p class="lead">
+                        <strong>$9.99 / month</strong></p>
+                </div>
+                <ul class="list-group list-group-flush text-center">
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Encrypted Sync</li>
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Secure Sharing and Links</li>
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Unlimited Bandwidth</li>
+                </ul>
+                <div class="panel-footer">
+                    <form action="{{ url_for('logged_out.save_storage_plan', plan_name="pro") }}" method="post">
+                    {{ pro_form.hidden_tag() }}
+                    <button class="btn btn-lg btn-block btn-primary">Select</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h4 class="text-center plan-heading">
+                    Pro Plus Storage (500 GB)</h4>
+                </div>
+                <div class="panel-body text-center">
+                    <p class="lead">
+                        <strong>$48.99 / month</strong></p>
+                </div>
+                <ul class="list-group list-group-flush text-center">
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Encrypted Sync</li>
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Secure Sharing and Links</li>
+                    <li class="list-group-item"><i class="icon-ok text-danger"></i>Unlimited Bandwidth</li>
+                </ul>
+                <div class="panel-footer">
+                    <form action="{{ url_for('logged_out.save_storage_plan', plan_name="pro-plus") }}" method="post">
+                    {{ pro_plus_form.hidden_tag() }}
+                    <button class="btn btn-lg btn-block btn-primary">Select</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,8 @@
+[Unit]
+Description=Sessions
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run -name sessions -p 6379:6379 syncsecure/redis-sessions

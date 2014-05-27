@@ -1,0 +1,11 @@
+[Unit]
+Description=Webserver
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run -name webserver -p 5000:5000 syncsecure/webserver
+
+[X-Fleet]
+X-Conflicts=http.*.service

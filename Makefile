@@ -1,15 +1,33 @@
-test:
-	coverage run tests.py
+LOGDIR=logs
 
-verify:
-	pyflakes app
-	pep8 app
+.PHONY: base python-base redis-sessions webserver
 
-clean:
-	find . -name *.pyc -delete
+all:
+	@echo "make build -- build docker images"
 
-run:
-	./run.py
+$(LOGDIR):
+	@mkdir -p $@
 
-install:
-	pip install -r requirements.txt
+build: base python-base redis-sessions webserver
+	docker images
+
+base:
+	docker build -no-cache -rm -t syncsecure/$@ $@
+
+python-base:
+	docker build -no-cache -rm -t syncsecure/$@ $@
+
+redis-sessions:
+	docker build -no-cache -rm -t syncsecure/$@ $@
+
+webserver:
+	docker build -no-cache -rm -t syncsecure/$@ $@
+
+
+clean: clean-logs clean-images
+
+clean-logs:
+	-@rm -rf $(LOGDIR)
+
+clean-images:
+	-@docker images -q | xargs docker rmi

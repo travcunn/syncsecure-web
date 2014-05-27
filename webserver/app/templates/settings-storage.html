@@ -1,0 +1,234 @@
+{% extends "layout.html" %}
+{% block title %}Settings - Storage - SyncSecure{% endblock %}
+
+{% block errormessages %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="top-error">
+          {% for category, message in messages %}
+            <div class="alert alert-dismissable alert{% if category != 'message'%}-{{ category }}{% endif %}{% if category == 'message' %}-warning{% endif %}">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <strong class="top-error-text">{{ message }}</strong>
+            </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      {% endwith %}
+{% endblock %}
+
+{% block topnavbar %}
+<ul class="nav navbar-nav navbar-right">
+  <li><a href="/upgrade">Get More Space</a></li>
+  <li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user-drop">
+        <span class="glyphicon glyphicon-user"></span> {{ g.user.get_name() }} 
+        <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="user-drop">
+        <li><a href="/settings" class="menu-item-fade">Using {{ g.user.usage.percent_used() }}% of {{ g.user.storage_plan.to_gb() }}GB</a></li>
+      <li>
+        <div class="progress progress-striped active">
+            <div class="progress-bar" style="width: {{ g.user.usage.percent_used() }}%"></div>
+        </div>
+      </li>
+      <li><a href="{{ url_for('settings.account') }}" class="menu-item-fade">Settings</a></li>
+      <li><a href="/install" class="menu-item-fade">Install</a></li>
+      <li><a href="/upgrade" class="menu-item-fade">Get More Space</a></li>
+      <li class="divider"></li>
+      <li><a href="{{ url_for('auth.logout') }}" class="menu-item-fade">Logout</a></li>
+    </ul>
+  </li>
+
+</ul>
+{% endblock %}
+
+{% block jsbottom %}
+<script src="/static/js/table-filter.js"></script>
+<script>
+$(window).ready(function(e){
+      $.each($('div.progress-bar'),function(){
+        $(this).css('width', $(this).attr('aria-valuetransitiongoal')+'%');
+      });
+});
+</script>
+{% endblock %}
+
+
+{% block body %}
+<div class="row inner-content">
+
+
+<div class="col-lg-2 col-sm-3 col-xs-12">
+  <div class="row">
+    <div class="col-xs-12">
+  <nav class="nav-sidebar">
+    <ul class="nav">
+      <li><a href="/home"><span class="glyphicon glyphicon-cloud"></span> My Files</a></li>
+      <!--
+      <li><a href="/documents" class="menu-item-fade"><span class="glyphicon glyphicon-file"></span> Documents</a></li>
+      <li><a href="/photos" class="menu-item-fade"><span class="glyphicon glyphicon-picture"></span> Photos</a></li>
+      <li><a href="/videos" class="menu-item-fade"><span class="glyphicon glyphicon-facetime-video"></span> Videos</a></li>
+      -->
+      <li class="nav-divider"></li>
+      <li><a href="/sharing"><span class="glyphicon glyphicon-link"></span> Sharing</a></li>
+      <li><a href="/activity" class="menu-item-fade"><span class="glyphicon glyphicon-list-alt"></span> Activity</a></li>
+      <li><a href="/invite"><span class="glyphicon glyphicon-thumbs-up"></span> Invite Friends</a></li>
+    </ul>
+  </nav>
+  </div>
+  </div>
+
+
+</div>
+
+<div class="col-lg-10 col-sm-9 col-xs-12 right-content-settings">
+    <h1>Settings</h1>
+
+    <div class="top-spacing">
+    <ul class="nav nav-tabs">
+        <li><a href="/settings/account">Account</a></li>
+        <li class="active"><a href="/settings/storage">Storage Space</a></li>
+    </ul>
+    </div>
+    <div class="row top-spacing">
+        <div class="col-lg-12">
+            <h3>Space Used</h3>
+        </div>
+        <div class="col-lg-12">
+            <div class="progress">
+                <div class="progress-bar progress-bar-info one-sec-ease-in-out" aria-valuetransitiongoal="{{ g.user.usage.percent_used_no_cache() }}"></div>
+            </div>
+        </div>
+        <div class="col-lg-12 text-center">
+            Using {{ g.user.usage.gb_used_no_cache() }} GB of {{ g.user.storage_plan.to_gb() }} GB
+        </div>
+        <div class="col-lg-12">
+            <h4><strong>Get More Space</strong></h4>
+            {% if show_basic==1 %}
+            <div class="row top-spacing">
+                <div class="col-md-6">
+                    <p>For $0.99 per month, you get 10 GB of space.</p>
+                </div>
+                <div class="col-md-6">
+                    <a href="#basicModal" data-toggle="modal" data-target="#basicModal" class="btn btn-sm btn-default">Downgrade to SyncSecure Basic</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if show_pro==1 %}
+            <div class="row top-spacing">
+                <div class="col-md-6">
+                    <p>For $9.99 per month, you get 100 GB of space.</p>
+                </div>
+                <div class="col-md-6">
+                    <a href="#proModal" data-toggle="modal" data-target="#proModal" class="btn btn-sm btn-primary">Upgrade to SyncSecure Pro</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if show_pro==2 %}
+            <div class="row top-spacing">
+                <div class="col-md-6">
+                    <p>For $9.99 per month, you get 100 GB of space.</p>
+                </div>
+                <div class="col-md-6">
+                    <a href="#proModal" data-toggle="modal" data-target="#proModal" class="btn btn-sm btn-default">Downgrade to SyncSecure Pro</a>
+                </div>
+            </div>
+            {% endif %}
+            {% if show_pro_plus==1 %}
+            <div class="row top-spacing">
+                <div class="col-md-6">
+                    <p>For $44.99 per month, you get 500 GB of space.</p>
+                </div>
+                <div class="col-md-6">
+                    <a href="#proPlusModal" data-toggle="modal" data-target="#proPlusModal" class="btn btn-sm btn-success">Upgrade to SyncSecure Pro Plus</a>
+                </div>
+            </div>
+            {% endif %}
+            <div class="row top-spacing">
+                <div class="col-sm-6">
+                    <p><a href="/contact">Need more space?</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+
+
+</div>
+</div>
+
+
+<div id="basicModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h1 class="text-center">Change Storage Plan</h1>
+      </div>
+      <div class="modal-body">
+        <h3 class="text-center">Would you like to change your plan to 10 GB?</h3>
+        <h5 class="text-center">Changes will be effective immediately.</h5>
+        <form class="form col-md-12 center-block" action="{{ url_for('settings.switch_storage_plan', plan_name="basic") }}" method="post">
+          {{ basic_form.hidden_tag() }}
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-12">
+          <button class="btn btn-primary btn-block" type="submit">Ok</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="proModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h1 class="text-center">Change Storage Plan</h1>
+      </div>
+      <div class="modal-body">
+        <h3 class="text-center">Would you like to change your plan to 100 GB?</h3>
+        <h5 class="text-center">Changes will be effective immediately.</h5>
+        <form class="form col-md-12 center-block" action="{{ url_for('settings.switch_storage_plan', plan_name="pro") }}" method="post">
+          {{ pro_form.hidden_tag() }}
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-12">
+          <button class="btn btn-primary btn-block" type="submit">Ok</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="proPlusModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h1 class="text-center">Change Storage Plan</h1>
+      </div>
+      <div class="modal-body">
+        <h3 class="text-center">Would you like to change your plan to 500 GB?</h3>
+        <h5 class="text-center">Changes will be effective immediately.</h5>
+        <form class="form col-md-12 center-block" action="{{ url_for('settings.switch_storage_plan', plan_name="pro-plus") }}" method="post">
+          {{ pro_plus_form.hidden_tag() }}
+      </div>
+      <div class="modal-footer">
+        <div class="col-md-12">
+          <button class="btn btn-primary btn-block" type="submit">Ok</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

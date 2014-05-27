@@ -1,0 +1,10 @@
+[Unit]
+Descriptions=Announce HTTP
+BindsTo=http.1.service
+
+[Service]
+ExecStart=/bin/sh -c "while true; do etcdctl set /services/website/http1 '{ \"host\": \"%H\", \"port\": 5000, \"version\": \"52c7248a14\" }' --ttl 60;sleep 45;done"
+ExecStop=/usr/bin/etcdctl rm /services/website/http1
+
+[X-Fleet]
+X-ConditionMachineOf=http.1.service
