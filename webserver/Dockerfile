@@ -1,5 +1,5 @@
 # Pull base image.
-FROM syncsecure/python-image
+FROM syncsecure/python-base
 
 MAINTAINER Travis Cunningham <travcunn@umail.iu.edu>
 
