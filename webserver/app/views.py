@@ -15,6 +15,7 @@ login_manager.login_view = 'auth.login'
 def load_user(id):
     return User.query.get(int(id))
 
+
 @app.before_request
 def before_request():
     g.user = current_user

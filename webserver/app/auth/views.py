@@ -29,7 +29,7 @@ def login():
         else:
             flash("Incorrect email or password", 'danger')
 
-    return render_template('login.html', login_form=login_form)
+    return render_template('auth/login.html', login_form=login_form)
 
 
 @mod.route("/logout")

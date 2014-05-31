@@ -25,7 +25,7 @@ def account():
 
     change_password_form = ChangePasswordForm()
 
-    return render_template("settings-account.html",
+    return render_template("settings/settings-account.html",
                            general_settings_form=g_settings_form,
                            change_password_form=change_password_form)
 
@@ -48,7 +48,7 @@ def storage():
     pro_form = StoragePlanForm()
     pro_plus_form = StoragePlanForm()
 
-    return render_template("settings-storage.html", show_pro=show_pro,
+    return render_template("settings/settings-storage.html", show_pro=show_pro,
                            show_pro_plus=show_pro_plus, show_basic=show_basic,
                            basic_form=basic_form, pro_form=pro_form,
                            pro_plus_form=pro_plus_form)

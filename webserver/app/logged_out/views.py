@@ -17,9 +17,8 @@ def front_page():
     if g.user is not None and g.user.is_authenticated():
         return redirect(url_for('home.home'))
 
-    print "Hello"
     login_form = LoginForm()
-    return render_template("front-page.html", login_form=login_form)
+    return render_template("logged_out/front-page.html", login_form=login_form)
 
 
 @mod.route('/verify-email', methods=["GET"])
@@ -31,7 +30,7 @@ def verify_email():
             return redirect(url_for('home.home'))
 
     resend_form = ResendVerifyEmailForm()
-    return render_template("verify-email.html", resend_form=resend_form)
+    return render_template("logged_out/verify-email.html", resend_form=resend_form)
 
 
 @mod.route('/verify-email/resend', methods=["POST"])
@@ -51,7 +50,7 @@ def select_storage_plan():
     pro_form = StoragePlanForm()
     pro_plus_form = StoragePlanForm()
 
-    return render_template("select-storage-plan.html", basic_form=basic_form,
+    return render_template("logged_out/select-storage-plan.html", basic_form=basic_form,
                            pro_form=pro_form, pro_plus_form=pro_plus_form)
 
 

@@ -12,16 +12,16 @@ build: base python-base redis-sessions webserver
 	docker images
 
 base:
-	docker build -no-cache -rm -t syncsecure/$@ $@
+	docker build --no-cache -rm -t syncsecure/$@ $@
 
 python-base:
-	docker build -no-cache -rm -t syncsecure/$@ $@
+	docker build --no-cache -rm -t syncsecure/$@ $@
 
 redis-sessions:
-	docker build -no-cache -rm -t syncsecure/$@ $@
+	docker build --no-cache -rm -t syncsecure/$@ $@
 
 webserver:
-	docker build -no-cache -rm -t syncsecure/$@ $@
+	docker build --no-cache -rm -t syncsecure/$@ $@
 
 
 clean: clean-logs clean-images

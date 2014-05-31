@@ -1,0 +1,22 @@
+{% macro render_field(field) %}
+<div class="form-group{% if field.errors %} has-error has-feedback{% endif %}">
+
+  {% if field.errors %}
+  <label class="control-label" for="{{ field.name }}">{{ field.label.text }} ({% for error in field.errors %}{{ error }}{% endfor %})</label>
+  {% else %}
+  <label for="{{ field.name }}">{{ field.label.text }}</label>
+  {% endif %}
+
+  {{ field(class="form-control", id=field.name, size="50", required="True", placeholder="Enter " + field.label.text, **kwargs)|safe }}
+
+  {% if field.errors %}
+  <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+  {% endif %}
+
+  {% if field.description %}
+  <span class="help-block small">
+    {{ field.description }}
+  </span>
+  {% endif %}
+</div>
+{% endmacro %}
