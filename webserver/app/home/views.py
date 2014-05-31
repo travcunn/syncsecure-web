@@ -26,4 +26,4 @@ def storage_plan_required(func):
 @login_required
 @storage_plan_required
 def home():
-    return render_template("home.html")
+    return render_template("home/home.html")
