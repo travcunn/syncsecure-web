@@ -9,7 +9,12 @@ ADD . /webapp
 ENV HOME /webapp
 WORKDIR /webapp
 
-EXPOSE 5000
+EXPOSE 8000
 
+RUN apt-get install libzmq-dev -y
+
+RUN pip install circus
 RUN pip install -r requirements.txt
-CMD ./production.sh
+
+CMD ["circus.ini"]
+ENTRYPOINT ["/usr/local/bin/circusd"]
