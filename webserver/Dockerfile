@@ -3,8 +3,10 @@ FROM syncsecure/python-base
 
 MAINTAINER Travis Cunningham <travcunn@umail.iu.edu>
 
-# Install app some packages
+# Install app
 ADD . /webapp
+# Install statd worker
+ADD ../statsd_scripts/stats_collector.py /stats
 
 ENV HOME /webapp
 WORKDIR /webapp

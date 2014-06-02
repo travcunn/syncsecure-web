@@ -3,6 +3,7 @@ from flask.ext.cache import Cache
 from flask.ext.login import LoginManager
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
+from raven.contrib.flask import Sentry
 from redis import ConnectionPool, Redis
 
 from app.sessions import RedisSessionInterface
@@ -11,6 +12,7 @@ from app.sessions import RedisSessionInterface
 app = Flask(__name__)
 app.config.from_object('app.config')
 
+sentry = Sentry(app)
 
 if not app.debug:
     import etcd
