@@ -1,6 +1,6 @@
 LOGDIR=logs
 
-.PHONY: base python-base redis-sessions webserver
+.PHONY: base python-base redis-cache redis-sessions sentry webserver
 
 all:
 	@echo "make build -- build docker images"
@@ -8,7 +8,7 @@ all:
 $(LOGDIR):
 	@mkdir -p $@
 
-build: base python-base redis-sessions webserver
+build: base python-base redis-cache redis-sessions sentry webserver
 	docker images
 
 base:
@@ -17,7 +17,13 @@ base:
 python-base:
 	docker build --no-cache --rm -t syncsecure/$@ $@
 
+redis-cache:
+	docker build --no-cache --rm -t syncsecure/$@ $@
+
 redis-sessions:
+	docker build --no-cache --rm -t syncsecure/$@ $@
+
+sentry:
 	docker build --no-cache --rm -t syncsecure/$@ $@
 
 webserver:

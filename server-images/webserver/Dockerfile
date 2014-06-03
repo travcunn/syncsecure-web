@@ -5,9 +5,12 @@ MAINTAINER Travis Cunningham <travcunn@umail.iu.edu>
 
 # Install app
 ADD . /webapp
-# Install statd worker
-ADD ../statsd_scripts/stats_collector.py /stats
+# Install stats collector
+ADD ../../monitoring/stats/stats_collector.py /stats
+ADD ../../monitoring/stats/requirements.txt /stats
+RUN pip install -r /stats/requirements.txt
 
+# Set the default directory for our environment
 ENV HOME /webapp
 WORKDIR /webapp
 

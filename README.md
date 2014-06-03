@@ -12,6 +12,8 @@ Docker images
 =============
 **Building:**
 
+The Docker containers can be found in ./server-images.
+
 Each service runs in a separate Docker container.
 To build all of the Docker images, run:
 

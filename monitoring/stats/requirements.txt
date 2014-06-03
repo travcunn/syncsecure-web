@@ -1,0 +1,5 @@
+argparse==1.2.1
+graphitesend==0.3.4
+psutil==2.1.1
+raven==5.0.0
+wsgiref==0.1.2
