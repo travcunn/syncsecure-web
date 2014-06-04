@@ -30,10 +30,13 @@ webserver:
 	docker build --no-cache --rm -t syncsecure/$@ $@
 
 
-clean: clean-logs clean-images
+clean: clean-logs clean-images clean-containers
 
 clean-logs:
 	-@rm -rf $(LOGDIR)
 
 clean-images:
 	-@docker images -q | xargs docker rmi
+
+clean-containers:
+	-@docker ps -a -q | xargs docker rm
