@@ -7,6 +7,80 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from app import cache, db
 
 
+class VirtualFile(db.Model):
+    __tablename__ = 'virtualfile'
+    id = db.Column(db.Integer, primary_key=True)
+
+    file_share_id = db.Column(db.Integer, db.ForeignKey('fileshare.id'))
+    
+
+class VirtualFolder(db.Model):
+    __tablename__ = 'virtualfolder'
+    id = db.Column(db.Integer, primary_key=True)
+
+    folder_share_id = db.Column(db.Integer, db.ForeignKey('foldershare.id'))
+    
+
+class FileShare(db.Model):
+    __tablename__ = 'fileshare'
+    id = db.Column(db.Integer, primary_key=True)
+
+    # which file does this link to
+    share_file_id = db.Column(db.Integer, db.ForeignKey('file.id'))
+    # who is this shared with
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    # virtual file associated with this file share
+    share = db.relationship('VirtualFile', lazy=True, uselist=False)
+
+
+
+class FolderShare(db.Model):
+    __tablename__ = 'foldershare'
+    id = db.Column(db.Integer, primary_key=True)
+
+    # which folder does this link to
+    share_folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
+    # who is this shared with
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    # virtual folder associated with this folder share
+    share = db.relationship('VirtualFolder', lazy=True, uselist=False)
+
+
+
+class File(db.Model):
+    __tablename__ = 'file'
+    id = db.Column(db.Integer, primary_key=True)
+    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
+    
+    name = db.Column(db.String(128))
+    modified = db.Column(db.DateTime)
+    checksum = db.Column(db.String(32))
+
+    shares = db.relationship('FileShare', lazy=True, uselist=True)
+    preview = db.relationship('Preview', lazy=True, uselist=False)
+
+
+class Folder(db.Model):
+    __tablename__ = 'folder'
+    id = db.Column(db.Integer, primary_key=True)
+    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
+    name = db.Column(db.String(128))
+
+    # folder contents
+    folder_contents = db.relationship('Folder', lazy=True, uselist=True)
+    file_contents = db.relationship('File', lazy=True, uselist=True)
+   
+    shares = db.relationship('FolderShare', lazy=True, uselist=True)
+
+
+class Preview(db.Model):
+    __tablename__ = 'preview'
+    id = db.Column(db.Integer, primary_key=True)
+    file_id = db.Column(db.Integer, db.ForeignKey('file.id'))
+
+
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -14,19 +88,32 @@ class User(db.Model):
     last_name = db.Column(db.String(72))
     email = db.Column(db.String(80), unique=True)
     __password = deferred(db.Column(db.String(96)))
-
-    verification = db.Column(db.String(40))
     creation_date = deferred(db.Column(db.DateTime))
 
+    # VERIFICATION INFO
+    verification = db.Column(db.String(40))
+ 
+    # STORAGE ROOT FOLDER
     storage_root_id = db.Column(db.Integer, db.ForeignKey('folder.id'))
+    storage_root = db.relationship('Folder', lazy=True, uselist=False)
 
+    # STORAGE PLAN
     storage_plan_id = db.Column(db.Integer, db.ForeignKey('storageplan.id'))
     storage_plan = db.relationship('StoragePlan', lazy=True, uselist=False)
-    address = db.relationship('Address', lazy=True, uselist=False)
-    billing_address = db.relationship('BillingAddress', lazy=True, uselist=False)
-    settings = db.relationship('Settings', lazy=True, uselist=False)
+    # STORAGE USAGE
     usage = db.relationship('Usage', lazy=True, uselist=False)
+
+    # BILLING INFORMATION
+    billing_address = db.relationship('BillingAddress', lazy=True,
+                                      uselist=False)
     
+    # USER SETTINGS
+    settings = db.relationship('Settings', lazy=True, uselist=False)
+
+    # SHARES USER HAS ACCESS TO
+    file_shares = db.relationship('FileShare', lazy=True, uselist=True)
+    folder_shares = db.relationship('FolderShare', lazy=True, uselist=True)
+        
     def __init__(self, first_name, last_name, email, password):
         self.first_name = first_name
         self.last_name = last_name
@@ -77,30 +164,6 @@ class User(db.Model):
         return '<User %r>' % (self.email)
 
 
-class Address(db.Model):
-    __tablename__ = 'address'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    country = db.Column(db.String(100))
-    address = db.Column(db.String(120))
-    zip_code = db.Column(db.String(20))
-    city = db.Column(db.String(60))
-    state = db.Column(db.String(50))
-    phone = db.Column(db.String(50))
-
-    def __init__(self, country, address, zip_code, city, state,
-                 phone):
-        self.country = country
-        self.address = address
-        self.zip_code = zip_code
-        self.city = city
-        self.state = state
-        self.phone = phone
-
-    def __repr__(self):
-        return '<Address %r>' % (self.user_id)
-
-
 class BillingAddress(db.Model):
     __tablename__ = 'billingaddress'
     id = db.Column(db.Integer, primary_key=True)
@@ -112,17 +175,8 @@ class BillingAddress(db.Model):
     state = db.Column(db.String(50))
     phone = db.Column(db.String(50))
 
-    def __init__(self, country, address, zip_code, city, state,
-                 phone):
-        self.country = country
-        self.address = address
-        self.zip_code = zip_code
-        self.city = city
-        self.state = state
-        self.phone = phone
-
     def __repr__(self):
-        return '<Address(%r)>' % (self.user_id)
+        return '<BillingAddress(%r)>' % (self.user_id)
 
 
 class Settings(db.Model):
@@ -180,5 +234,5 @@ class StoragePlan(db.Model):
         return float(self.space)/pow(1024, 3)
 
     def __repr__(self):
-        dollar_amount = float(self.space)/100
+        dollar_amount = float(self.price)/100
         return '<StoragePlan %r bytes for $%r>' % (self.space, dollar_amount)

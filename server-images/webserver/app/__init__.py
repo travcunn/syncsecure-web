@@ -15,12 +15,16 @@ app.config.from_object('app.config')
 sentry = Sentry(app)
 
 if not app.debug:
+    """
     import etcd
 
     client = etcd.Client()
     redis_cache_ip = client.read('/nodes/redis-cache').value
     redis_sessions_ip = client.read('/nodes/redis-sessions').value
 
+    """
+    redis_cache_ip = '127.0.0.1'
+    redis_sessions_ip = '127.0.0.1'
     # REDIS SESSION DATABASE
     redis_session_pool = ConnectionPool(host=redis_sessions_ip, port=6379,
                                         db=0)
@@ -44,4 +48,3 @@ db = SQLAlchemy(app)
 
 
 from app import views
-import filesystem.models
